@@ -1,0 +1,42 @@
+# Можно убрать "version: '3.8'", т.к. Docker Compose v2 не требует version
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: django_app
+    ports:
+      - "8080:8000"
+    # Тома
+    volumes:
+      # Привязываем локальную папку app (где исходники) внутрь контейнера
+      - ./myproject:/usr/src/app
+    environment:
+      # Пример переменных окружения, через которые
+      # настроим Django-приложение (settings.py).
+      - DB_NAME=postgres_db
+      - DB_USER=postgres_user
+      - DB_PASS=postgres_pass
+      - DB_HOST=db
+      - DB_PORT=5432
+
+    # Зависит от сервиса db (чтобы Postgres успел подняться)
+    depends_on:
+      - db
+    command: "sleep infinity"
+
+
+  db:
+    image: postgres:15-alpine
+    container_name: django_db
+    environment:
+      - POSTGRES_DB=postgres_db
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=postgres_pass
+    volumes:
+      # Пример тома для хранения данных Postgres
+      - db_data:/var/lib/postgresql/data
+
+# Описание именованных томов
+volumes:
+  db_data:
