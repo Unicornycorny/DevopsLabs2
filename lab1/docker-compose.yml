@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  mynginx:
+    build: 
+      context: .       # указывает, что Dockerfile лежит в текущей директории
+      dockerfile: Dockerfile
+    container_name: mynginx_container
+    ports:
+      - "8080:80"    # Пробрасываем порт 8080 на локалхост -> 80 в контейнере
+    volumes:
+      - ./conf/nginx.conf:/etc/nginx/nginx.conf:ro  # Монтируем конфиг в контейнер (только чтение)
+      - ./www:/var/www:ro                           # Монтируем папку статических файлов
+    # restart: always # или on-failure, если захочешь автоперезапуск
+
+    # Важно! Ни user, ни command указывать не нужно, т.к. у нас всё настроено в Dockerfile.
