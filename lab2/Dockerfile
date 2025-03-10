@@ -18,8 +18,6 @@ WORKDIR /usr/src/app
 COPY requirements.txt ./
 
 # 6) Установим зависимости
-#    Обратите внимание, что build-base удалять не нужно, если мы хотим
-#    чтобы psycopg2 скомпилился. Но, как правило, уже после установки мы можем снести лишние пакеты
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 7) Удалим пакеты, которые нужны были только для сборки (опционально, но уменьшает образ)
@@ -35,6 +33,4 @@ RUN chown -R django:django /usr/src/app
 USER django
 
 # 11) По умолчанию (CMD) запускаем Gunicorn (или дев-сервер Django).
-#     В реальном продакшене - лучше Gunicorn/Uvicorn.
-#     Здесь для упрощения оставлю Django runserver:
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
